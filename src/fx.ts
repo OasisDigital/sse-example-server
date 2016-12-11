@@ -16,17 +16,17 @@ class CurrencyPair {
     private longCycle: number,
     private shortCycle: number) { }
 
-  public generate(secSince1970: number) {
+  public generate(msSince1970: number) {
     let bid = this.firstBid;
     bid += this.spread * 100 *
-      Math.sin((360 / this.longCycle) * (deg2rad(secSince1970 % this.longCycle)));
+      Math.sin((360 / this.longCycle) * (deg2rad(msSince1970 / 1000 % this.longCycle)));
     bid += this.spread * 30 *
-      Math.sin((360 / this.shortCycle) * (deg2rad(secSince1970 % this.shortCycle)));
+      Math.sin((360 / this.shortCycle) * (deg2rad(msSince1970 / 1000 % this.shortCycle)));
     bid += (randomIntInclusive(-1000, 1000) / 1000.0) * 10 * this.spread;
     const ask = bid + this.spread;
 
     return {
-      timestamp: secSince1970,
+      timestamp: msSince1970,
       symbol: this.symbol,
       bid: bid.toFixed(this.decimalPlaces),
       ask: ask.toFixed(this.decimalPlaces)
@@ -56,8 +56,7 @@ const symbols = [
 
 export function startFxGenerator(cb, ms) {
   setInterval(() => {
-    const hrTime = process.hrtime();
-    const t = hrTime[0] * 1000 + hrTime[1] / 1000000; // ms since 1970
+    const t = Date.now(); // ms since 1970
     const ix = randomIntInclusive(0, symbols.length - 1);
     cb(symbols[ix].generate(t));
   }, randomIntInclusive(ms, ms * 1.5)); // simulate jitter

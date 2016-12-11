@@ -5,10 +5,12 @@
   "description": "",
   "scripts": {
     "clean": "npm install rimraf && rimraf build",
-    "prepublish": "tsc --outDir build",
+    "build": "tsc --outDir build",
+    "prepublish": "npm run build",
     "lint": "tslint \"src/**/*.ts\"",
     "debug": "node-debug build/main.js",
-    "start": "node build/main.js"
+    "start": "node build/main.js",
+    "go": "npm run build && npm run start"
   },
   "author": "Oasis Digital Solutions Inc.",
   "license": "ISC",
